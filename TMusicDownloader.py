@@ -24,3 +24,4 @@ while True:
 
 window.close()
 
+#new code looks sexy!
