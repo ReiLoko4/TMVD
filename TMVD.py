@@ -1,6 +1,10 @@
+from concurrent.futures import thread
 import PySimpleGUI as sg
 from yt_dlp import YoutubeDL
 from pathlib import Path
+from threading import Thread
+
+
 
 
 def download_music(url):
@@ -21,8 +25,6 @@ def download_video(url):
     except:
         window["out"].update("download mal sucedido, verifique a Url.")
 
-def get_quality(url):
-    pass
 
 layout = [[sg.Output(key = "out",size = (50,10))],
 
@@ -47,22 +49,24 @@ while True:
 
     if event == "download":
         if values["slctf"] == "Video":
-            if len(values["IN"]) > 0:              
-                download_video(values["IN"])
+            if len(values["IN"]) > 0:
+                t = Thread(target=download_video,args=(values["IN"]))          
+                t.start()
             else:
-                window["out"].add("Por favor digite algo.")
+                window["out"].update("Por favor digite algo.")
         else:
-            if len(values["IN"]) > 0:              
-                download_music(values["IN"])
+            if len(values["IN"]) > 0:      
+                URL = str(values["IN"])        
+                t = Thread(target=download_music,args=(1,))
+                t.start()
             else:
-                window["out"].add("Por favor digite algo.")
+                window["out"].update("Por favor digite algo.")
             
 
 
     if event in (None, "Close"):
         break
-    
-    
+
 
 
 window.close()
