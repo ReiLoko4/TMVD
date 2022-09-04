@@ -62,48 +62,37 @@ window = sg.Window("nada aqui", layout)
 while True:
     event, values = window.read()
 
+
     if event == "slctf":
         if values["slctf"] == "Music":
             values["slctf"] = "Music"
         else:
+            values["slctf"] ="Video"
+        
             values["slctf"] = "Video"
 
     if event == "download":
-        if values["slctf"] == "Video":
+        if values["slctf"] == "Video":             
             if len(values["IN"]) > 0:
-
                 download_video(values["IN"])
             else:
+                window["out"].add("Por favor digite algo.")
                 print("Por favor digite algo.")
         else:
-            if len(values["IN"]) > 0:
+            if len(values["IN"]) > 0:              
                 download_music(values["IN"])
             else:
+                window["out"].add("Por favor digite algo.")
+            
+
                 print("Por favor digite algo.")
 
     if event in (None, "Close"):
         break
-
-                t = Thread(target=download_video,args=(values["IN"]))          
-                t.start()
-            else:
-                window["out"].update("Por favor digite algo.")
-        else:
-            if len(values["IN"]) > 0:      
-                URL = str(values["IN"])        
-                t = Thread(target=download_music,args=(1,))
-                t.start()
-            else:
-                window["out"].update("Por favor digite algo.")
-            
-
-
-    if event in (None, "Close"):
-        break
-
-
+    
+    
 
 
 window.close()
 
-# new code looks sexy!
+#new code looks sexy!
