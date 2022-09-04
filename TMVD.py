@@ -2,6 +2,10 @@ import PySimpleGUI as sg
 from yt_dlp import YoutubeDL
 from pathlib import Path
 import os
+from threading import Thread
+
+
+
 
 
 def download_music(url):
@@ -44,8 +48,6 @@ def download_video(url):
         print("download mal sucedido, verifique a Url.")
 
 
-def get_quality(url):
-    pass
 
 
 layout = [
@@ -69,6 +71,7 @@ while True:
     if event == "download":
         if values["slctf"] == "Video":
             if len(values["IN"]) > 0:
+
                 download_video(values["IN"])
             else:
                 print("Por favor digite algo.")
@@ -80,6 +83,25 @@ while True:
 
     if event in (None, "Close"):
         break
+
+                t = Thread(target=download_video,args=(values["IN"]))          
+                t.start()
+            else:
+                window["out"].update("Por favor digite algo.")
+        else:
+            if len(values["IN"]) > 0:      
+                URL = str(values["IN"])        
+                t = Thread(target=download_music,args=(1,))
+                t.start()
+            else:
+                window["out"].update("Por favor digite algo.")
+            
+
+
+    if event in (None, "Close"):
+        break
+
+
 
 
 window.close()
