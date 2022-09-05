@@ -1,98 +1,114 @@
 import PySimpleGUI as sg
 from yt_dlp import YoutubeDL
 from pathlib import Path
-import os
 from threading import Thread
 
 
+class DownloadMusic(Thread):
+    def __init__(self, url):
+        Thread.__init__(self)
+        self.url = url
+
+    def run(self):
+        try:
+            print("Baixando[]\n")
+            out = str(
+                Path.home()
+                / "Documents"
+                / "Trash downloader"
+                / "Musics (trash)"
+                / "%(title)s.%(ext)s"
+            )
+            with YoutubeDL(
+                {
+                    "ffmpeg_location": "ffmpeg.exe",
+                    "outtmpl": out,
+                    "quiet": True,
+                    "no_warnings": True,
+                    "format": "140",
+                    "postprocessors": [
+                        {"key": "FFmpegMetadata"},
+                        {
+                            "key": "EmbedThumbnail",
+                            "already_have_thumbnail": True,
+                        },
+                    ],
+                }
+            ) as ydl:
+                ydl.download(self.url)
+                print("\nDonwload concluído[]")
+        except:
+            print("\nDownload mal sucedido, verifique a Url.")
 
 
+class DownloadVideo(Thread):
+    def __init__(self, url):
+        Thread.__init__(self)
+        self.url = url
 
-def download_music(url):
-    try:
-        print("Baixando")
-        out = str(
-            Path.home()
-            / "Documents"
-            / "Trash downloader"
-            / "Musics (trash)"
-            / "%(title)s.%(ext)s"
-        )
-        with YoutubeDL(
-            {"ffmpeg_location": "ffmpeg.exe", "outtmpl": out, "format": "140"}
-        ) as ydl:
-            ydl.download(url)
-    except:
-        print("download mal sucedido, verifique a Url.")
-
-
-def download_video(url):
-    try:
-        print("Baixando")
-        out = str(
-            Path.home()
-            / "Documents"
-            / "Trash downloader"
-            / "Videos (trash)"
-            / "%(title)s.%(ext)s"
-        )
-        with YoutubeDL(
-            {
-                "ffmpeg_location": "ffmpeg.exe",
-                "outtmpl": out,
-                "format": "bv*[ext=mp4]+ba[ext=m4a]/b[ext=mp4] / bv*+ba/b",
-            }
-        ) as ydl:
-            ydl.download(url)
-    except:
-        print("download mal sucedido, verifique a Url.")
-
-
+    def run(self):
+        try:
+            print("Baixando[]\n")
+            out = str(
+                Path.home()
+                / "Documents"
+                / "Trash downloader"
+                / "Videos (trash)"
+                / "%(title)s.%(ext)s"
+            )
+            with YoutubeDL(
+                {
+                    "ffmpeg_location": "ffmpeg.exe",
+                    "outtmpl": out,
+                    "quiet": True,
+                    "no_warnings": True,
+                    "format": "bv*[ext=mp4]+ba[ext=m4a]/b[ext=mp4] / bv*+ba/b",
+                    "postprocessors": [
+                        {"key": "FFmpegMetadata"},
+                        {"key": "EmbedThumbnail"},
+                    ],
+                }
+            ) as ydl:
+                ydl.download(self.url)
+                print("\nDonwload concluído[]")
+        except:
+            print("\nDownload mal sucedido, verifique a Url.")
 
 
 layout = [
-    [sg.Output(key="out", size=(50, 10))],
-    [sg.ButtonMenu("Video", [["Video", "Music"], ["Video", "Music"]], key="slctf")],
-    [sg.Input(key="IN"), sg.Button("download"), sg.Button("Exit", key="Close")],
+    [sg.Output(key="out", size=(50, 10),)],
+    [
+        sg.Button("Download Music", key="dm"),
+        sg.Button("Download Video", key="dv"),
+    ],
+    [sg.Input(key="IN"), sg.Button("Exit", key="Close")],
 ]
 
-
-window = sg.Window("nada aqui", layout)
+window = sg.Window("Trash Downloader", layout)
 
 while True:
     event, values = window.read()
 
-
-    if event == "slctf":
-        if values["slctf"] == "Music":
-            values["slctf"] = "Music"
+    v = DownloadVideo(values["IN"])
+    m = DownloadMusic(values["IN"])
+    
+    if event == "dv":
+        if len(values["IN"]) > 0:
+            v.start()
         else:
-            values["slctf"] ="Video"
-        
-            values["slctf"] = "Video"
+            print("Por favor digite algo.")
 
-    if event == "download":
-        if values["slctf"] == "Video":             
-            if len(values["IN"]) > 0:
-                download_video(values["IN"])
-            else:
-                window["out"].add("Por favor digite algo.")
-                print("Por favor digite algo.")
+    if event == "dm":
+        if len(values["IN"]) > 0:
+            m.start()
+
         else:
-            if len(values["IN"]) > 0:              
-                download_music(values["IN"])
-            else:
-                window["out"].add("Por favor digite algo.")
-            
-
-                print("Por favor digite algo.")
+            print("Por favor digite algo.")
 
     if event in (None, "Close"):
         break
-    
-    
 
 
 window.close()
 
-#new code looks sexy!
+# new code looks sexy!
