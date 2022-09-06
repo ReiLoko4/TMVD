@@ -62,7 +62,7 @@ class DownloadVideo(Thread):
                     "outtmpl": out,
                     "quiet": True,
                     "no_warnings": True,
-                    "format": "bv*[ext=mp4]+ba[ext=m4a]/b[ext=mp4] / bv*+ba/b",
+                    "format": "137+140/136+140/135+140/134+140/133+140/160+140/22/18",
                     "postprocessors": [
                         {"key": "FFmpegMetadata"},
                         {"key": "EmbedThumbnail"},
