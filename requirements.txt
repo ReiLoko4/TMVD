@@ -1,3 +1,2 @@
 PySimpleGUI
 yt-dlp
-ffmpeg
